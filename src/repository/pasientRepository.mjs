@@ -14,19 +14,17 @@ const pasientRepository ={
             },
         });
     },
-    async createNewpassient(
-        idAccount, 
-        name, 
-        gender, 
-        birthdate, 
-        address,
-    ){ 
+    async createNewpassient(ocr, idAccount){
+        const pasientData = {
+            idAccount: 1,
+            nama: ocr.nama,
+            jenisKelamin: ocr.jenis_kelamin.toUpperCase().startsWith("L") ? "L" : "P",
+            tanggalLahir: new Date(ocr.tanggal_lahir.split("-").reverse().join("-")),
+            alamat: ocr.alamat
+          };
+           
         const pasient = await passientModel.create({
-            idAccount : idAccount, 
-            nama : name, 
-            jenisKelamin : gender, 
-            tanggalLahir : birthdate, 
-            alamat : address
+            pasientData   
         }, ); 
 
         return pasient;

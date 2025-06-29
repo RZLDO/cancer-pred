@@ -11,9 +11,14 @@ const accountModel  = sequelize.define(
             allowNull : false,
             field : 'id_account'
         }, 
+        name : {
+            type : DataTypes.STRING, 
+            allowNull : false
+        },
         username : {
             type : DataTypes.STRING, 
             allowNull : false, 
+            unique : true
         }, 
         password : { 
             type : DataTypes.STRING, 

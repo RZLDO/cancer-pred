@@ -8,12 +8,9 @@ dotenv.config();
 const authController = {
     async register(req,res){
         try{
+            console.log("req.body:", req.body);
+
             const { username, password, roleId } = req.body;
-            if(!username || !password || !roleId) {
-                const error = new Error("invalid request body"); 
-                error.status  = 400; 
-                throw error;
-            }
             const hashPassword = await bcrypt.hash(password, 10);
         
             const createUser = await authRepository.register(
@@ -39,13 +36,8 @@ const authController = {
 
     async login(req,res){
         try{
+            
             const { username, password } = req.body;
-
-            if(!username && !password){
-                const error = new Error("invalid login request");
-                error.status = 400; 
-                throw error; 
-            }
 
             const user = await authRepository.login( 
                 username,

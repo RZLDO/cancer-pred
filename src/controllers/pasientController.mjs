@@ -19,15 +19,12 @@ const pasientController = {
             })
         }
      },
+     
      async createNewPasient(req, res){
         try{
             const {
                 idAccount, name, gender, birthDate, address
             } = req.body;
-
-            console.log(
-                "account" + idAccount + name + gender + address 
-            )
             
             if(!idAccount || !name || !gender || !birthDate || !address){
                 const error = new Error('invalid request body');

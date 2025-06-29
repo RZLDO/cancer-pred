@@ -6,10 +6,14 @@ import rolesRoute from './routes/rolesRoutes.mjs';
 import authRoutes from './routes/authRoutes.mjs';
 import userRoutes from './routes/userRoutes.mjs';
 import pasientRoute from './routes/pasientRoutes.mjs';
+import trainingRoutes from './routes/trainingRoutes.mjs';
+import pemeriksaanRoute from './routes/pemeriksaanRoutes.mjs';
 
 const app = express();
 dotenv.config();
 app.use(express.json());
+app.use('/upload', express.static('upload'));
+
 app.use(express.urlencoded({ extended: true }));
 // cors setup 
 app.use(cors());
@@ -17,8 +21,9 @@ app.use(cors());
 app.use('/api', rolesRoute);
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
-app.use('/api', pasientRoute)
-
+app.use('/api', pasientRoute);
+app.use('/api', trainingRoutes);
+app.use('/api', pemeriksaanRoute)
 
 const port = process.env.API_PORT|| 7000;
 

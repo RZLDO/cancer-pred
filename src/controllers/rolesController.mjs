@@ -4,14 +4,12 @@ import { successResponse, errorResponse } from '../utils/apiResponseUtils.mjs';
 const rolesController = {
     async createRoles(req, res) {
         try {
-            console.log("createroles")
           const { roleName } = req.body;
           if (!roleName) {
             const error = new Error('roles data is invalid check your request');
             error.status = 400;
             throw error;
           }
-          console.log("error nih")
           const userRole = await rolesRepository.createUserRoles(roleName);
           return successResponse(res, {
             statusCode: 201,
