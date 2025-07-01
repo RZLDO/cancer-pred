@@ -24,7 +24,15 @@ const userRepository = {
     },
 
     async getAllUser(){
-        const users = await accountModel.findAll();
+        const users = await accountModel.findAll({
+            attributes: ['idAccount','name', 'username',],
+            include : [
+                {
+                    model : userRolesModel,
+                    as : 'role'
+                }
+            ]
+        });
         return users;
     },
 
