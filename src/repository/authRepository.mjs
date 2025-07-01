@@ -44,7 +44,7 @@ const authRepository = {
     }
     return user;
   },
-
+  
 };
 
 export default authRepository;

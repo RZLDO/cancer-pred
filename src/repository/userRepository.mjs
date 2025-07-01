@@ -1,11 +1,18 @@
-import { accountModel } from '../model/defineDatabaseRelations.mjs'
+import { accountModel, userRolesModel } from '../model/defineDatabaseRelations.mjs'
 
 const userRepository = {
     async getUserDetail(userId){
         const user = await accountModel.findOne({
+            attributes: ['idAccount','name', 'username',],
             where : {
                 idAccount : userId
-            }
+            },
+            include : [
+                {
+                    model : userRolesModel,
+                    as : 'role'
+                }
+            ]
         })
 
         if(!user){
@@ -14,6 +21,11 @@ const userRepository = {
             throw error;
         }
         return user;
+    },
+
+    async getAllUser(){
+        const users = await accountModel.findAll();
+        return users;
     },
 
     async changeUserPassword(userId, newPassword){
