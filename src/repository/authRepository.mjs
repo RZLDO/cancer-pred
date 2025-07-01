@@ -1,7 +1,7 @@
 import {accountModel}  from '../model/defineDatabaseRelations.mjs';
 import bcrypt from 'bcrypt';
 const authRepository = {
-  async register(username, password, roleId) {
+  async register(username, password, roleId, name) {
     const user = await accountModel.findOne({
       where: {
         username: username,
@@ -17,7 +17,8 @@ const authRepository = {
     return accountModel.create({
       username: username,
       password: password,
-      roleId : roleId,
+      idRole: roleId,
+      name : name
     });
   },
 

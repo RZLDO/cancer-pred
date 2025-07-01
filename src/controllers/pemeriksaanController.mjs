@@ -1,7 +1,7 @@
 import predictionsRepository from "../repository/pemeriksaanRepository.mjs";
 import pasientRepository from "../repository/pasientRepository.mjs";
 import { successResponse, errorResponse } from "../utils/apiResponseUtils.mjs";
-import { runOCR } from "../service/ocr /ocrImplementations.mjs"
+import { runOCR } from "../service/ocr/ocrImplementations.mjs"
 
 
 

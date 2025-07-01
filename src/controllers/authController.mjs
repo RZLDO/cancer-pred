@@ -8,15 +8,15 @@ dotenv.config();
 const authController = {
     async register(req,res){
         try{
-            console.log("req.body:", req.body);
 
-            const { username, password, roleId } = req.body;
+            const { username, password, roleId, name } = req.body;
             const hashPassword = await bcrypt.hash(password, 10);
         
             const createUser = await authRepository.register(
                 username, 
                 hashPassword,
-                roleId
+                roleId, 
+                name,
             );
 
             return successResponse(res, {
