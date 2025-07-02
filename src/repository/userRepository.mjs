@@ -53,7 +53,55 @@ const userRepository = {
                 password : newPassword
             }
         )
-    }
+    },
+
+    async deleteAccount(id){
+        const user = await accountModel.findOne({
+          where : {
+            idAccount : id
+          }
+        });
+    
+        if (!user) {
+          const error = new Error('account not found');
+          error.statusCode = 404;
+          throw error;
+        }
+    
+        await user.destroy();
+      },
+    
+      async updateAccount(id,data){
+        const user = await accountModel.findOne({
+          where : {
+            idAccount : id
+          }
+        });
+    
+        if (!user) {
+          const error = new Error('account not found');
+          error.statusCode = 404;
+          throw error;
+        }
+    
+        return await user.update(data);
+      },
+    
+      async getUserById(id){
+        const user = await accountModel.findOne({
+          where : {
+            idAccount : id
+          }
+        });
+    
+        if (!user) {
+          const error = new Error('account not found');
+          error.statusCode = 404;
+          throw error;
+        }
+    
+        return user;
+      }
 }
 
 export default userRepository;

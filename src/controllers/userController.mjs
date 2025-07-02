@@ -2,6 +2,7 @@ import userRepository from "../repository/userRepository.mjs";
 import { successResponse, errorResponse } from "../utils/apiResponseUtils.mjs";
 import dotenv from 'dotenv'; 
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
 dotenv.config(); 
 
 const userController = {
@@ -65,6 +66,89 @@ const userController = {
         } catch(error){
             return errorResponse(res, {
                 statusCode : error.status || 500,
+                message : error.message
+            })
+        }
+    },
+
+    async getUserById(req,res){
+        try{
+            const { id } = req.params;
+            const user = await userRepository.getUserById(id)
+
+            return successResponse(res, {
+                statusCode : 200, 
+                message : 'fetch detail user success', 
+                data : {
+                    user : user
+                }
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500, 
+                message : error.message
+            })
+        }
+    },
+
+    async changeUserPassword(req, res ){
+        try{
+            const {id} = req.params;
+            const {newPassword} = req.body;
+            const hashPassword = await bcrypt.hash(newPassword, 10);
+            const user = await userRepository.changeUserPassword(
+                id, hashPassword
+            );
+
+            return successResponse(res, {
+                statusCode : 200, 
+                message : 'change password success', 
+                data : {
+                    user : user
+                }
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500, 
+                message : error.message
+            })
+        }
+    },
+
+    async deleteAccount(req, res){
+        try{
+            const {id} = req.params;
+             await userRepository.deleteAccount(id)
+
+            return successResponse(res, {
+                statusCode : 200, 
+                message : 'change password success', 
+                
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500, 
+                message : error.message
+            })
+        }
+    }, 
+
+    async updateAccount(req, res){
+        try{
+            const {data } = req.body;
+            const { id } = req.params;
+            const user =  await userRepository.updateAccount(id,data)
+
+            return successResponse(res, {
+                statusCode : 200, 
+                message : 'change password success', 
+                data : {
+                    user : user
+                }
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500, 
                 message : error.message
             })
         }
