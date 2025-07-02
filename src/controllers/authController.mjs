@@ -9,13 +9,13 @@ const authController = {
     async register(req,res){
         try{
 
-            const { username, password, roleId, name } = req.body;
+            const { username, password, idRole, name } = req.body;
             const hashPassword = await bcrypt.hash(password, 10);
         
             const createUser = await authRepository.register(
                 username, 
                 hashPassword,
-                roleId, 
+                idRole, 
                 name,
             );
 
