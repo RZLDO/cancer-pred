@@ -1,7 +1,10 @@
 import predictionsRepository from "../repository/pemeriksaanRepository.mjs";
 import pasientRepository from "../repository/pasientRepository.mjs";
+import userRepository from "../repository/userRepository.mjs";
 import { successResponse, errorResponse } from "../utils/apiResponseUtils.mjs";
 import { runOCR } from "../service/ocr/ocrImplementations.mjs"
+import { generateDocx } from "../service/method/document.mjs";
+import axios from "axios";
 
 
 
@@ -54,24 +57,77 @@ const pemeriksaanController = {
         try{
             const data = req.body;
             const ktpImage = req.file;
-            if(!ktpImage) {
-                return errorResponse(res, {
-                  statusCode: 400,
-                  message: "No file uploaded",
-                });
-            }
-
-            const ocrResult = await runOCR(ktpImage.path);
-        
+            const { nama, jenisKelamin, tanggalLahir, alamat } = data;
             
-            const pasient = await pasientRepository.createNewpassient(ocrResult,data.idAccount)
-            const pemeriksaan = await predictionsRepository.createPredition(data)
+            if (!ktpImage && (!nama || !jenisKelamin || !tanggalLahir || !alamat)) {
+              return errorResponse(res, {
+                statusCode: 400,
+                message: "Either upload a KTP image or provide all required fields",
+              });
+            }
+            
+            let pasient;
+            
+            if (ktpImage) {
+              const ocrResult = await runOCR(ktpImage.path);
+              pasient = await pasientRepository.createNewpassientWithOcr(ocrResult, data.idAccount);
+            } else {
+              pasient = await pasientRepository.createNewpassient(
+                nama,
+                jenisKelamin,
+                tanggalLahir,
+                alamat,
+                data.idAccount
+              );
+            }
+            
 
+            const request = {
+                radiusMean : data.radiusMean, 
+                textureMean : data.textureMean, 
+                perimeterMean : data.perimeterMean, 
+                areaMean : data.areaMean, 
+                smoothnessMean : data.smoothnessMean, 
+                compactnessMean : data.compactnessMean, 
+                concavityMean : data.concavityMean,
+            }
+            const response = await axios.post(`${process.env.ML_API_URL}/predict`, request);
+            
+            
+            const pemeriksaan = await predictionsRepository.createPredition(
+                data,
+                pasient.idPasient, 
+                response.data.data.diagnosis,
+                response.data.data.probability
+            )
+            const dokter = await userRepository.getUserById(data.idAccount)
+            const dokumenData = {
+                nama : pasient.nama,
+                id : pemeriksaan.idPemeriksaan,
+                alamat : pasient.alamat, 
+                tanggal : pasient.tanggalLahir,
+                jenis_kelamin : pasient.jenisKelamin.toUpperCase().startsWith("L") ? "Laki-Laki" : "Perempuan", 
+                dokter : dokter.name,
+                radius : data.radiusMean, 
+                texture: data.textureMean, 
+                perimeter : data.perimeterMean, 
+                area: data.areaMean, 
+                smoothness : data.smoothnessMean, 
+                compactness : data.compactnessMean, 
+                concavity : data.concavityMean,
+                diagnosis : response.data.data.diagnosis.toUpperCase().startsWith("M") ? "Melignan" : "Benigna", 
+                probabilitas : (response.data.data.probability * 100).toFixed(2)
+            }
+            const linkFile = generateDocx(dokumenData)
+            const result = await predictionsRepository.updateDokumenFile(
+                pemeriksaan.idPemeriksaan, 
+                linkFile
+            )
             return successResponse(res, {
                 statusCode : 200, 
                 message : 'fetch pemeriksaan success', 
                 data : {
-                    pemeriksaan : pemeriksaan 
+                    pemeriksaan : result
                 }
             })
         }catch(error){

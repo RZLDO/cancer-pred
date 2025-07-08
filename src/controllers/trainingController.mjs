@@ -4,6 +4,7 @@ import { parse } from 'csv-parse';
 import xlsx from 'xlsx';
 import { errorResponse, successResponse } from "../utils/apiResponseUtils.mjs";
 import trainingRepository from '../repository/trainingRepository.mjs';
+import axios from 'axios';
 
 const allowedFields = [
   'diagnosis',
@@ -17,6 +18,7 @@ const allowedFields = [
 ];
 
 const trainingController = {
+  
   async uploadTrainingData(req, res) {
     try {
       const file = req.file;
@@ -26,7 +28,6 @@ const trainingController = {
           message: "No file uploaded",
         });
       }
-
       const ext = path.extname(file.originalname).toLowerCase();
       const data = [];
 
@@ -62,14 +63,17 @@ const trainingController = {
           message: "Unsupported file type",
         });
       }
-      const inserted = await trainingRepository.createTrainings(data)
+      await trainingRepository.createTrainings(data)
+      const response = await axios.get(`${process.env.ML_API_URL}/retrain`);
 
       return successResponse(res, {
         statusCode: 201,
-        message: "Training data uploaded successfully",
-        data: inserted,
+        message: "Upload data and retraining model successfully",
+        data: {
+          metrics : response.data.data.metrics,
+          classDistribution : response.data.data.class_distribution
+        },
       });
-
     } catch (error) {
       console.error("Upload error:", error);
       return errorResponse(res, {
@@ -142,7 +146,7 @@ const trainingController = {
   async getTrainingData(req, res){
     try{
         const { page = 1, limit = 10, } = req.query;
-        const trainings = await trainingRepository.fetchTraining(
+        const trainings = await trainingRepository.fetchTrainingPaging(
             parseInt(page), 
             parseInt(limit)
         );

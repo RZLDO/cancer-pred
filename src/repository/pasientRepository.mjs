@@ -14,18 +14,33 @@ const pasientRepository ={
             },
         });
     },
-    async createNewpassient(ocr, idAccount){
+    async createNewpassientWithOcr(ocr, idAccount){
+        const parsedOcr = JSON.parse(ocr);
+        console.log(parsedOcr);
+        console.log(idAccount)
+        
         const pasientData = {
-            idAccount: 1,
-            nama: ocr.nama,
-            jenisKelamin: ocr.jenis_kelamin.toUpperCase().startsWith("L") ? "L" : "P",
-            tanggalLahir: new Date(ocr.tanggal_lahir.split("-").reverse().join("-")),
-            alamat: ocr.alamat
+            idAccount: idAccount,
+            nama: parsedOcr.nama,
+            jenisKelamin: parsedOcr.jenis_kelamin.toUpperCase().startsWith("L") ? "L" : "P",
+            tanggalLahir: new Date(parsedOcr.tanggal_lahir.split("-").reverse().join("-")),
+            alamat: parsedOcr.alamat
           };
            
-        const pasient = await passientModel.create({
-            pasientData   
-        }, ); 
+        const pasient = await passientModel.create(pasientData); 
+
+        return pasient;
+    }, 
+    async createNewpassient(nama, jenisKelamin, tanggalLahir, alamat, idAccount){
+        const pasientData = {
+            idAccount: idAccount,
+            nama: nama,
+            jenisKelamin: jenisKelamin.toUpperCase().startsWith("L") ? "L" : "P",
+            tanggalLahir: tanggalLahir,
+            alamat: alamat,
+          };
+          console.log(pasientData);
+        const pasient = await passientModel.create(pasientData); 
 
         return pasient;
     }, 

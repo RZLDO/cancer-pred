@@ -1,11 +1,34 @@
-import predictionsModel from "../model/predictionModel.mjs";
+import {passientModel, predictionsModel, accountModel} from '../model/defineDatabaseRelations.mjs'
 
 const predictionsRepository = {
     async createPredition(
-        data
+        data,
+        idPasient,
+        diagnosis, 
+        probabilitas,
     ){
-        
-        return await  predictionsModel.create(data)
+        const predictionData = {
+            ...data,
+            idPasien : idPasient,
+            diagnosis : diagnosis,
+            probabilitas : probabilitas,
+        };
+
+        return await  predictionsModel.create(predictionData)
+    }, 
+
+    async updateDokumenFile(idPemeriksaan, linkFile){
+        const predictions = await predictionsModel.findOne(
+            {
+                where : { 
+                    idPemeriksaan : idPemeriksaan,
+                }
+            },
+        )
+
+        return await predictions.update({
+            file : linkFile
+        })
     }, 
 
     async getPredictions(
@@ -16,6 +39,14 @@ const predictionsRepository = {
             limit : limit,
             offset : offset,
             order: [['createdAt', 'DESC']], 
+            include : {
+                model : passientModel,
+                as : "pasient",
+                include  : { 
+                    model : accountModel, 
+                    as  : 'user'
+                }
+            }
         })
     },
 

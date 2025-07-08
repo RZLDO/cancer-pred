@@ -6,6 +6,7 @@ import trainingController from '../controllers/trainingController.mjs';
 import { trainingValidations } from '../validations/trainingValidations.mjs';
 import { validateBody } from '../middlewares/validate.mjs';
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'upload/');

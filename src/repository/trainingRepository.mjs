@@ -28,11 +28,10 @@ const trainingRepository = {
         });
     },
 
-    async fetchTraining(
+    async fetchTrainingPaging(
         page,
         limit,
     ){
-
         const offset = (page - 1) * limit;
         return await trainingModel.findAndCountAll({
             limit : limit,
@@ -64,6 +63,9 @@ const trainingRepository = {
           }
         
           await training.destroy();
+    }, 
+    async getAllTraining(){ 
+        return await trainingModel.findAll();
     }
       
 }
