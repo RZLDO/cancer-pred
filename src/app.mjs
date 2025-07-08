@@ -13,6 +13,8 @@ const app = express();
 dotenv.config();
 app.use(express.json());
 app.use('/upload', express.static('upload'));
+app.use('/document', express.static('document'));
+
 
 app.use(express.urlencoded({ extended: true }));
 // cors setup 

@@ -57,7 +57,7 @@ const pemeriksaanController = {
         try{
             const data = req.body;
             const ktpImage = req.file;
-            const { nama, jenisKelamin, tanggalLahir, alamat } = data;
+            const { nama, jenisKelamin, tanggalLahir, alamat, nik } = data;
             
             if (!ktpImage && (!nama || !jenisKelamin || !tanggalLahir || !alamat)) {
               return errorResponse(res, {
@@ -81,7 +81,6 @@ const pemeriksaanController = {
               );
             }
             
-
             const request = {
                 radiusMean : data.radiusMean, 
                 textureMean : data.textureMean, 

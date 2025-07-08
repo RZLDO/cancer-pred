@@ -16,12 +16,20 @@ const pasientRepository ={
     },
     async createNewpassientWithOcr(ocr, idAccount){
         const parsedOcr = JSON.parse(ocr);
-        console.log(parsedOcr);
-        console.log(idAccount)
         
+        const isExist = await passientModel.findOne({
+            where : { 
+                nik : parsedOcr.nik
+            }
+        })
+
+        if(isExist){
+            return isExist;
+        }
         const pasientData = {
             idAccount: idAccount,
             nama: parsedOcr.nama,
+            nik : parsedOcr.nik,
             jenisKelamin: parsedOcr.jenis_kelamin.toUpperCase().startsWith("L") ? "L" : "P",
             tanggalLahir: new Date(parsedOcr.tanggal_lahir.split("-").reverse().join("-")),
             alamat: parsedOcr.alamat
@@ -31,7 +39,16 @@ const pasientRepository ={
 
         return pasient;
     }, 
-    async createNewpassient(nama, jenisKelamin, tanggalLahir, alamat, idAccount){
+    async createNewpassient(nama, jenisKelamin, tanggalLahir, alamat, idAccount, nik){
+        const isExist = await passientModel.findOne({
+            where : { 
+                nik : parsedOcr.nik
+            }
+        })
+
+        if(isExist){
+            return isExist;
+        }
         const pasientData = {
             idAccount: idAccount,
             nama: nama,

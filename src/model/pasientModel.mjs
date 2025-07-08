@@ -10,6 +10,10 @@ const passientModel = database.define(
             autoIncrement : true, 
             primaryKey : true,
             field :'id_pasien'
+        },
+        nik : {
+            type : DataTypes.STRING,
+            allowNull : false
         }, 
         idAccount : {
             type : DataTypes.INTEGER, 
