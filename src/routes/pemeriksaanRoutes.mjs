@@ -22,5 +22,5 @@ pemeriksaanRoute.get('/pemeriksaan', authenticate,pemeriksaanController.fetchPem
 pemeriksaanRoute.patch('/pemeriksaan/account/:id', authenticate, validateParams(params),pemeriksaanController.updatePemeriksaan)
 pemeriksaanRoute.delete('/pemeriksaan/:id',authenticate,validateParams(params), pemeriksaanController.deletePemeriksaan) 
 pemeriksaanRoute.post('/pemeriksaan', authenticate,upload.single('ktpImage'), validateBody(pemeriksaanValidations), pemeriksaanController.createPemeriksaan)
-
+pemeriksaanRoute.get('/summaries/pemeriksaan', authenticate, pemeriksaanController.getSummariesDiagnosis)
 export default pemeriksaanRoute;

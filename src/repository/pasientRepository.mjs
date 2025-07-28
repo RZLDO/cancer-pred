@@ -14,6 +14,12 @@ const pasientRepository ={
             },
         });
     },
+
+    async getTotalPasient() {
+        const total = await passientModel.count();
+        return total;
+    },
+          
     async createNewpassientWithOcr(ocr, idAccount){
         const parsedOcr = JSON.parse(ocr);
         

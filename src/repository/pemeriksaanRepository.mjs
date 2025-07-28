@@ -1,4 +1,5 @@
 import {passientModel, predictionsModel, accountModel} from '../model/defineDatabaseRelations.mjs'
+import database from "../config/database.mjs";
 
 const predictionsRepository = {
     async createPredition(
@@ -82,7 +83,30 @@ const predictionsRepository = {
         }
 
         await prediction.destroy()
-    }
+    },
+    async getSummaryPemeriksaan() {
+        const [result] = await database.query(`
+          SELECT 
+            ROUND(AVG(probabilitas) * 100, 2) AS rata_rata_probabilitas_persen,
+            SUM(CASE WHEN diagnosis = 'B' THEN 1 ELSE 0 END) AS total_benign,
+            SUM(CASE WHEN diagnosis = 'M' THEN 1 ELSE 0 END) AS total_malignant
+          FROM data_pemeriksaan
+        `);
+        console.log(result);
+        return result;
+      },
+    
+      async getSummaryDiagnosis() {
+        const [result] = await database.query(`
+          SELECT 
+            SUM(CASE WHEN diagnosis = 'B' THEN 1 ELSE 0 END) AS total_benign,
+            SUM(CASE WHEN diagnosis = 'M' THEN 1 ELSE 0 END) AS total_malignant
+          FROM data_pemeriksaan
+        `);
+        console.log(result);
+        return result;
+      }
+      
 }
 
 export default predictionsRepository;

@@ -156,7 +156,25 @@ const pemeriksaanController = {
                 message: error.message,
               });
         }
-    }
+    },
+    async getSummariesDiagnosis(req, res){
+        try{
+            const summariesPredictions = await predictionsRepository.getSummaryDiagnosis();
+
+            return successResponse(res, {
+                statusCode : 201,
+                message : 'fetch summaries success', 
+                data : {
+                    summariesPredictions : summariesPredictions,
+                }
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500,
+                message : error.message
+            })
+        }
+    },
 }
 
 export default pemeriksaanController;

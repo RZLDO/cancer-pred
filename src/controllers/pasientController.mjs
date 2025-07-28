@@ -1,5 +1,6 @@
 import pasientRepository from "../repository/pasientRepository.mjs";
 import { successResponse, errorResponse } from "../utils/apiResponseUtils.mjs";
+import predictionsRepository from "../repository/pemeriksaanRepository.mjs";
 
 const pasientController = {
      async getPasient(req, res){
@@ -10,6 +11,27 @@ const pasientController = {
                 message : 'fetch pasient success', 
                 data : {
                     pasient : pasient
+                }
+            })
+        }catch(error){
+            return errorResponse(res, {
+                statusCode : error.status || 500,
+                message : error.message
+            })
+        }
+     },
+
+     async getSummariesPatient(req, res){
+        try{
+            const totalPatient = await pasientRepository.getTotalPasient();
+            const summariesPredictions = await predictionsRepository.getSummaryPemeriksaan();
+
+            return successResponse(res, {
+                statusCode : 201,
+                message : 'fetch summaries success', 
+                data : {
+                    totalPatient : totalPatient,
+                    summariesPredictions : summariesPredictions,
                 }
             })
         }catch(error){

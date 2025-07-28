@@ -65,7 +65,7 @@ const trainingController = {
       }
       await trainingRepository.createTrainings(data)
       const response = await axios.get(`${process.env.ML_API_URL}/retrain`);
-
+      console.log(response);
       return successResponse(res, {
         statusCode: 201,
         message: "Upload data and retraining model successfully",
