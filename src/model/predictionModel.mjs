@@ -57,7 +57,7 @@ const predictionsModel = database.define(
             field : 'probabilitas'
         }, 
         file : {
-            type : DataTypes.FLOAT,
+            type : DataTypes.STRING,
             field : 'link_file'
         }, 
         createdAt : {

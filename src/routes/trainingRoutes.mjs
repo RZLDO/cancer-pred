@@ -26,6 +26,7 @@ trainingRoutes.post('/training', authenticate,upload.none(), trainingController.
 trainingRoutes.patch('/training/:id', authenticate, upload.none(), validateBody(trainingValidations), trainingController.updateTraining);
 trainingRoutes.get('/training', authenticate, trainingController.getTrainingData);
 trainingRoutes.delete('/training/:id', authenticate, trainingController.deleteTraining)
+trainingRoutes.get('/summaries/training', authenticate, trainingController.getTrainingSummaries )
 
 
 export default trainingRoutes;

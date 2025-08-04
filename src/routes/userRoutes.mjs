@@ -9,10 +9,11 @@ const upload = multer();
 
 const userRoutes = express.Router();
 
-userRoutes.get('/user',authenticate, userController.getUserDetail);
-userRoutes.get('/users',authenticate, userController.getAllUser);
-userRoutes.patch('/user/:id', authenticate,upload.none(), validateParams(params), userController.updateAccount)
-userRoutes.patch('/user/change-password/:id', authenticate, upload.none(),validateParams(params), userController.changeUserPassword)
-userRoutes.delete('/user/:id', authenticate, upload.none(), validateParams(params), userController.deleteAccount)
-userRoutes.get('/user/:id',authenticate,upload.none(),validateParams(params), userController.getUserById)
+userRoutes.get('/user', authenticate, userController.getUserDetail);
+userRoutes.get('/users', authenticate, userController.getAllUser);
+userRoutes.patch('/user/change-password/:id', authenticate, upload.none(), userController.changeUserPassword);
+userRoutes.patch('/user/:id', authenticate, upload.none(), userController.updateAccount);
+userRoutes.delete('/user/:id', authenticate, upload.none(), userController.deleteAccount);
+userRoutes.get('/user/:id', authenticate, upload.none(), userController.getUserById);
+
 export default userRoutes;

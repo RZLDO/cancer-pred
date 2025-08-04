@@ -66,8 +66,16 @@ const trainingRepository = {
     }, 
     async getAllTraining(){ 
         return await trainingModel.findAll();
-    }
-      
+    },
+    async getTrainingSummaries(){
+        const [result] = await database.query(`
+            SELECT 
+              SUM(CASE WHEN diagnosis = 'B' THEN 1 ELSE 0 END) AS total_benign,
+              SUM(CASE WHEN diagnosis = 'M' THEN 1 ELSE 0 END) AS total_malignant
+            FROM data_training
+          `);
+          return result;
+    } 
 }
 
 export default trainingRepository;

@@ -122,7 +122,7 @@ const userController = {
 
             return successResponse(res, {
                 statusCode : 200, 
-                message : 'change password success', 
+                message : 'delete account success', 
                 
             })
         }catch(error){
@@ -135,13 +135,15 @@ const userController = {
 
     async updateAccount(req, res){
         try{
-            const {data } = req.body;
+            const data = req.body;
             const { id } = req.params;
+            console.log(data);
             const user =  await userRepository.updateAccount(id,data)
+            console.log(user);
 
             return successResponse(res, {
                 statusCode : 200, 
-                message : 'change password success', 
+                message : 'change data user success', 
                 data : {
                     user : user
                 }

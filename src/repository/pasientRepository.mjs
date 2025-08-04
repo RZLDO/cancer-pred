@@ -28,7 +28,6 @@ const pasientRepository ={
                 nik : parsedOcr.nik
             }
         })
-
         if(isExist){
             return isExist;
         }
@@ -46,11 +45,23 @@ const pasientRepository ={
         return pasient;
     }, 
     async createNewpassient(nama, jenisKelamin, tanggalLahir, alamat, idAccount, nik){
+        console.log('userId :' + idAccount);
         const isExist = await passientModel.findOne({
             where : { 
-                nik : parsedOcr.nik
+                nik : nik
             }
         })
+        const userExist = await accountModel.findOne({
+            where : {
+                idAccount : idAccount
+            }
+        })
+
+        if(!userExist){
+            const error = new Error('Invalid account id');
+            error.statusCode = 404;
+            throw error;
+        }
 
         if(isExist){
             return isExist;
@@ -61,8 +72,8 @@ const pasientRepository ={
             jenisKelamin: jenisKelamin.toUpperCase().startsWith("L") ? "L" : "P",
             tanggalLahir: tanggalLahir,
             alamat: alamat,
+            nik : nik
           };
-          console.log(pasientData);
         const pasient = await passientModel.create(pasientData); 
 
         return pasient;

@@ -59,7 +59,7 @@ const pemeriksaanController = {
             const ktpImage = req.file;
             const { nama, jenisKelamin, tanggalLahir, alamat, nik } = data;
             
-            if (!ktpImage && (!nama || !jenisKelamin || !tanggalLahir || !alamat)) {
+            if (!ktpImage && (!nama || !jenisKelamin || !tanggalLahir || !alamat || !nik)) {
               return errorResponse(res, {
                 statusCode: 400,
                 message: "Either upload a KTP image or provide all required fields",
@@ -67,8 +67,9 @@ const pemeriksaanController = {
             }
             
             let pasient;
-            
-            if (ktpImage) {
+            console.log("KTP", ktpImage);
+            if (ktpImage && ktpImage.path) {
+                console.log("ocr running")
               const ocrResult = await runOCR(ktpImage.path);
               pasient = await pasientRepository.createNewpassientWithOcr(ocrResult, data.idAccount);
             } else {
@@ -77,7 +78,8 @@ const pemeriksaanController = {
                 jenisKelamin,
                 tanggalLahir,
                 alamat,
-                data.idAccount
+                data.idAccount,
+                nik,
               );
             }
             

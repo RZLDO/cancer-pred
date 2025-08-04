@@ -167,7 +167,24 @@ const trainingController = {
             message: error.message,
             });
     }
-  }
+  },
+  async getTrainingSummaries(req, res){
+    try{
+       
+        const trainings = await trainingRepository.getTrainingSummaries()
+
+        return successResponse(res, {
+            statusCode : 200, 
+            message : 'success fetch data', 
+            data : trainings
+        });
+    }catch(error){
+        return errorResponse(res, {
+            statusCode: error.status || 500,
+            message: error.message,
+            });
+    }
+  },
 };
 
 export default trainingController;

@@ -23,7 +23,7 @@ const userRepository = {
         return user;
     },
 
-    async getAllUser(){
+    async getAllUser(){ 
         const users = await accountModel.findAll({
             attributes: ['idAccount','name', 'username',],
             include : [
@@ -69,23 +69,28 @@ const userRepository = {
         }
     
         await user.destroy();
-      },
+    },
     
-      async updateAccount(id,data){
-        const user = await accountModel.findOne({
-          where : {
-            idAccount : id
-          }
-        });
-    
-        if (!user) {
-          const error = new Error('account not found');
-          error.statusCode = 404;
-          throw error;
+    async updateAccount(id,data){
+      const user = await accountModel.findOne({
+        where : {
+          idAccount : id
         }
-    
-        return await user.update(data);
-      },
+      });
+      console.log(data);
+  
+      if (!user) {
+        const error = new Error('account not found');
+        error.statusCode = 404;
+        throw error;
+      }
+      return await user.update({
+        name: data.name,
+        roleId: data.roleId,
+        username: data.username,
+      });
+      
+    },
     
       async getUserById(id){
         const user = await accountModel.findOne({

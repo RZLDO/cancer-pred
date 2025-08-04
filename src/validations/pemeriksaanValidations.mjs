@@ -8,5 +8,11 @@ export  const pemeriksaanValidations = Joi.object({
     smoothnessMean :Joi.number().required(), 
     compactnessMean : Joi.number().required(), 
     concavityMean : Joi.number().required(), 
-    idAccount : Joi.number().required()
+    idAccount : Joi.number().required(),
+
+    nik: Joi.string().optional(),
+    nama: Joi.string().optional(),
+    jenisKelamin: Joi.string().optional(),
+    tanggalLahir: Joi.date().optional(),
+    alamat: Joi.string().optional()
 })
