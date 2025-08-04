@@ -1,4 +1,6 @@
 import trainingModel from "../model/trainingModel.mjs";
+import database from "../config/database.mjs";
+
 
 const trainingRepository = {
     async createTrainings(
