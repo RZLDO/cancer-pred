@@ -1,5 +1,5 @@
 
-import { userRolesModel, accountModel, passientModel } from '../model/defineDatabaseRelations.mjs'
+import { userRolesModel, accountModel, passientModel, predictionsModel } from '../model/defineDatabaseRelations.mjs'
 
 const pasientRepository ={
     async fetchPasient(){
@@ -8,8 +8,8 @@ const pasientRepository ={
                 model: accountModel,
                 as: 'user', 
                 include: {
-                    model: userRolesModel,     // model relasinya
-                    as: 'role'            // alias dari relasinya
+                    model: userRolesModel,    
+                    as: 'role'        
                   }
             },
         });
@@ -92,8 +92,13 @@ const pasientRepository ={
                 include: {
                     model: userRolesModel,     // model relasinya
                     as: 'role'            // alias dari relasinya
-                  }
+                  },
+                
             },
+            include : {
+                model : predictionsModel,
+                as : 'pemeriksaan'
+            }
         })
 
         if(!pasient){

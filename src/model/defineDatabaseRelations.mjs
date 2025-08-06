@@ -9,7 +9,7 @@ accountModel.belongsTo(userRolesModel, { foreignKey: 'id_role' });
 passientModel.belongsTo(accountModel, { foreignKey : 'id_account', as : 'user' });
 accountModel.hasMany(passientModel, { foreignKey : 'id_account' });
 
-passientModel.hasMany(predictionsModel, {foreignKey : 'id_pasien'})
+passientModel.hasMany(predictionsModel, {foreignKey : 'id_pasien', as : 'pemeriksaan'})
 predictionsModel.belongsTo(passientModel, { foreignKey : 'id_pasien', as : 'pasient'})
 
 
