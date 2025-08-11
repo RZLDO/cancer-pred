@@ -4,7 +4,11 @@ import { parse } from 'csv-parse';
 import xlsx from 'xlsx';
 import { errorResponse, successResponse } from "../utils/apiResponseUtils.mjs";
 import trainingRepository from '../repository/trainingRepository.mjs';
-import axios from 'axios';
+import { exec } from "child_process";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const allowedFields = [
   'diagnosis',
@@ -64,15 +68,35 @@ const trainingController = {
         });
       }
       await trainingRepository.createTrainings(data)
-      const response = await axios.get(`${process.env.ML_API_URL}/retrain`);
-      console.log(response);
-      return successResponse(res, {
-        statusCode: 201,
-        message: "Upload data and retraining model successfully",
-        data: {
-          metrics : response.data.data.metrics,
-          classDistribution : response.data.data.class_distribution
-        },
+      const pythonFile = path.join(__dirname, "scripts", "../../../../ml-pred-py/ml/training.py");
+
+      exec(`python3 "${pythonFile}"`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing Python script: ${error.message}`);
+          return res.status(500).json({
+            statusCode: 500,
+            message: "Error running Python script",
+            error: error.message,
+          });
+        }
+
+        if (stderr) {
+          console.error(`Python stderr: ${stderr}`);
+        }
+
+        // Python bisa return JSON
+        let output;
+        try {
+          output = JSON.parse(stdout);
+        } catch (e) {
+          output = stdout;
+        }
+
+        return res.status(201).json({
+          statusCode: 201,
+          message: "Upload data and retraining model successfully",
+          data: output,
+        });
       });
     } catch (error) {
       console.error("Upload error:", error);
